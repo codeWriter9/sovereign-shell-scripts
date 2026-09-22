@@ -46,6 +46,9 @@ cat << EOF > pom.xml
         <java.version>${JAVA_VERSION}</java.version>
         <maven.compiler.source>${JAVA_VERSION}</maven.compiler.source>
         <maven.compiler.target>${JAVA_VERSION}</maven.compiler.target>
+        <!-- Existing properties -->
+        <mockito.version>5.14.2</mockito.version>
+        <assertj.version>3.26.3</assertj.version>
     </properties>
 
     <dependencies>
@@ -77,6 +80,28 @@ cat << EOF > pom.xml
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+        <!-- AssertJ (Fluent, type-safe assertions for Java) -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>\${assertj.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Mockito Core & JUnit Jupiter Integration -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>\${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>\${mockito.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

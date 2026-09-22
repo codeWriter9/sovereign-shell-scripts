@@ -40,6 +40,9 @@ cat << EOF > pom.xml
         <fasterxml>2.18.2</fasterxml>
         <jakarta.xml.bind-api>4.0.2</jakarta.xml.bind-api>
         <jaxb-runtime>4.0.5</jaxb-runtime>
+        <!-- Existing properties -->
+        <mockito.version>5.14.2</mockito.version>
+        <assertj.version>3.26.3</assertj.version>
     </properties>
 
     <dependencies>
@@ -137,6 +140,28 @@ cat << EOF > pom.xml
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>2.0.16</version>
+        </dependency>
+        
+        <!-- AssertJ (Fluent, type-safe assertions for Java) -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>\${assertj.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Mockito Core & JUnit Jupiter Integration -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>\${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>\${mockito.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     
