@@ -8,6 +8,9 @@ ARTIFACT_ID="${2:-quick-util}"
 JAVA_VERSION="23"
 SPRING_BOOT_VERSION="3.3.4"
 
+echo
+echo
+echo
 echo "==> Initializing Sovereign Spring Boot Project: ${GROUP_ID}:${ARTIFACT_ID}"
 
 # Create directory structure
@@ -49,6 +52,8 @@ cat << EOF > pom.xml
         <!-- Existing properties -->
         <mockito.version>5.14.2</mockito.version>
         <assertj.version>3.26.3</assertj.version>
+        <spotless.version>2.43.0</spotless.version>
+        <spotbugs.version>4.8.6.2</spotbugs.version>
     </properties>
 
     <dependencies>
@@ -137,6 +142,72 @@ cat << EOF > pom.xml
                     </excludes>
                 </configuration>
             </plugin>
+            <!-- Spotless: Code Formatting Standardizer -->
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>\${spotless.version}</version>
+                <configuration>
+                    <java>
+                        <googleJavaFormat>
+                            <version>1.22.0</version>
+                            <style>AOSP</style>
+                        </googleJavaFormat>
+                        <removeUnusedImports/>
+                        <trimTrailingWhitespace/>
+                        <endWithNewline/>
+                    </java>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <phase>compile</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <!-- Dependency Bloat & Unused Dependency Analysis -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.7.1</version>
+                <executions>
+                    <execution>
+                        <id>analyze-bloat</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>analyze-only</goal>
+                        </goals>
+                        <configuration>
+                            <failOnWarning>true</failOnWarning>
+                            <ignoreNonCompile>true</ignoreNonCompile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            
+            <!-- SpotBugs: Bytecode Static Analysis -->
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>\${spotbugs.version}</version>
+                <configuration>
+                    <effort>Max</effort>
+                    <threshold>Medium</threshold>
+                    <failOnError>true</failOnError>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <phase>verify</phase>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>
@@ -213,6 +284,9 @@ public class AppConfigTest {
 }
 EOF
 
+echo "==> Run Spotless'..."
+mvn clean spotless:apply
+
 echo "==> Verifying build with 'mvn clean test package'..."
 mvn clean test package
 
@@ -222,5 +296,7 @@ echo "java -jar target/${ARTIFACT_ID}-0.0.1-SNAPSHOT.jar"
 
 echo "==> Build successful. Returning to root directory."
 cd ..
-
+echo
+echo
+echo
 echo "==> COMPLETED in ${SECONDS} seconds."

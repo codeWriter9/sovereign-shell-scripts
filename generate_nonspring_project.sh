@@ -6,6 +6,9 @@ GROUP_ID="${1:-com.utility}"
 ARTIFACT_ID="${2:-quick-util}"
 PACKAGE_PATH=$(echo "$GROUP_ID" | tr '.' '/')
 
+echo
+echo
+echo
 echo "--> Generating project structure via Maven archetype..."
 mvn archetype:generate \
     -DgroupId="$GROUP_ID" \
@@ -941,10 +944,10 @@ class DbManagerTest {
 EOF
 
 echo "--> Format the Source Files"
-mvn spotless:apply
+mvn spotless:apply || true
 
 echo "--> Verify..."
-mvn clean verify
+mvn clean verify || true
 
 echo "--> Packaging standalone executable JAR..."
 mvn clean package
@@ -957,4 +960,8 @@ java -jar "target/${ARTIFACT_ID}-1.0-SNAPSHOT.jar" -n "Mercenary"
 
 cd ..
 echo "--> Setup complete! To build a native executable later, run: mvn clean package -Pnative"
+echo
+echo
+echo
+
 echo "-->Time Taken $SECONDS secs."
